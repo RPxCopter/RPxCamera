@@ -6,10 +6,9 @@ mkdir -p Video
 
 # Arguments:
 diskLimitInBytes=4000000000
-durationMS=60000
+durationMS=120000
 
 echo "record" > RPxCamera.mode
-echo "false" > RPxCamera.event
 mode=$(cat RPxCamera.mode)
 currentFileName="dummy.h264"
 
@@ -44,6 +43,10 @@ while [ true ]; do
 			echo `date +%s` "+" $currentFileName
 
 			#   | tea "Video/$currentFileName-HD.h264"
-			raspivid -n -w 1136 -h 640 -b 1000000 -fps 45 -t $durationMS -o -  | gst-launch-1.0 -v fdsrc ! h264parse ! rtph264pay config-interval=10 pt=96 ! udpsink host=10.0.1.12 port=9000
+			#raspivid -n -w 1136 -h 640 -b 1000000 -fps 45 -t $durationMS -o -  | gst-launch-1.0 -v fdsrc ! h264parse ! rtph264pay config-interval=10 pt=96 ! udpsink host=10.0.1.12 port=9000
+			raspivid -n -w 1136 -h 640 -b 2000000 -fps 45 -t $durationMS -o -  | gst-launch-1.0 -v fdsrc ! h264parse ! rtph264pay config-interval=10 pt=96 ! udpsink host=10.0.1.12 port=9000
+			#raspivid -n -w 1920 -h 1080 -t $durationMS -o -  | gst-launch-1.0 -v fdsrc ! h264parse ! rtph264pay config-interval=10 pt=96 ! udpsink host=10.0.1.12 port=9000
+			#raspivid -t $durationMS -h 720 -w 1080 -fps 25 -hf -b 2000000 -o - | gst-launch-1.0 -v fdsrc ! h264parse ! rtph264pay config-interval=10 pt=96 ! udpsink host=10.0.1.12 port=9000
+			#raspivid -t $durationMS -h 720 -w 1080 -fps 25 -hf -b 2000000 -o - | gst-launch-1.0 -v fdsrc ! h264parse !  rtph264pay config-interval=1 pt=96 ! gdppay ! tcpserversink host=YOUR-PI-IP-ADDRESS port=5000
 	fi
 done
